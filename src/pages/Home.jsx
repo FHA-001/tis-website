@@ -63,11 +63,11 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                 {/* Resumption Flyer */}
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20 hover:bg-white/15 transition-all">
-                  <div className="relative rounded-xl overflow-hidden mb-3 aspect-[3/2]">
+                  <div className="relative rounded-xl overflow-hidden mb-3">
                     <img
                       src="/TIS Resumes .jpg"
                       alt="School Resumption Flyer"
-                      className="w-full h-full object-cover"
+                      className="w-full h-auto object-contain"
                       loading="lazy"
                     />
                   </div>
@@ -77,11 +77,11 @@ export default function Home() {
 
                 {/* Activities Flyer */}
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20 hover:bg-white/15 transition-all">
-                  <div className="relative rounded-xl overflow-hidden mb-3 aspect-[3/2]">
+                  <div className="relative rounded-xl overflow-hidden mb-3">
                     <img
                       src="/TIS activities.jpg"
                       alt="First Term Activities Flyer"
-                      className="w-full h-full object-cover"
+                      className="w-full h-auto object-contain"
                       loading="lazy"
                     />
                   </div>
