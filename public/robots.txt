@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://tritonint.netlify.app/sitemap.xml
+
+# Crawl-delay (optional, respectful crawling)
+Crawl-delay: 1

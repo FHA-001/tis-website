@@ -1,0 +1,36 @@
+{
+  "name": "Triton International School",
+  "short_name": "Triton",
+  "description": "Triton International School provides world-class education from Nursery through Secondary level in Kuchikau, Nasarawa State. Scientia et Excellentia — Knowledge and Excellence.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#00509D",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "school"],
+  "shortcuts": [
+    {
+      "name": "Admissions",
+      "short_name": "Apply",
+      "description": "Apply for admission",
+      "url": "/admissions",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Contact",
+      "short_name": "Contact",
+      "description": "Contact the school",
+      "url": "/contact",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    }
+  ]
+}
