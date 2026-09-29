@@ -19,6 +19,32 @@ export default function Home() {
       metaDescription.setAttribute('content', `${SCHOOL.name} provides world-class education from Nursery through Secondary level in Kuchikau, Nasarawa State. Discover our academic programs, facilities, and admission process for 2026/2027.`);
     }
 
+    // Check if banner should be hidden (Saturday 11:59pm CAT)
+    const now = new Date();
+    const catOffset = 1; // CAT is UTC+1
+    const catTime = new Date(now.getTime() + (catOffset * 60 * 60 * 1000));
+    
+    // Get the next Saturday at 11:59pm CAT
+    const dayOfWeek = catTime.getDay(); // 0 = Sunday, 6 = Saturday
+    const daysUntilSaturday = (6 - dayOfWeek + 7) % 7;
+    const nextSaturday = new Date(catTime);
+    nextSaturday.setDate(catTime.getDate() + daysUntilSaturday);
+    nextSaturday.setHours(23, 59, 0, 0);
+    
+    // Calculate time until Saturday 11:59pm CAT
+    const timeUntilSaturday = nextSaturday.getTime() - catTime.getTime();
+    
+    let timeoutId;
+    // If we're already past Saturday 11:59pm CAT, hide banner immediately
+    if (timeUntilSaturday <= 0) {
+      setShowBanner(false);
+    } else {
+      // Otherwise, set a timeout to hide it at that time
+      timeoutId = setTimeout(() => {
+        setShowBanner(false);
+      }, timeUntilSaturday);
+    }
+
     async function fetchNews() {
       const { data } = await supabase
         .from('news_posts')
@@ -28,6 +54,11 @@ export default function Home() {
       if (data) setLatestNews(data);
     }
     fetchNews();
+
+    // Cleanup timeout on component unmount
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, []);
 
   return (
@@ -60,7 +91,20 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                {/* Activities This Week */}
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20 hover:bg-white/15 transition-all">
+                  <div className="relative rounded-xl overflow-hidden mb-3">
+                    <img
+                      src="/TIS activities this week.jpg"
+                      alt="Activities This Week"
+                      className="w-full h-auto object-contain"
+                      loading="lazy"
+                    />
+                  </div>
+                  <h3 className="text-white font-heading font-bold text-lg mb-1">Activities This Week</h3>
+                </div>
+
                 {/* Resumption Flyer */}
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20 hover:bg-white/15 transition-all">
                   <div className="relative rounded-xl overflow-hidden mb-3">
