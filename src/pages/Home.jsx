@@ -9,6 +9,8 @@ import { SCHOOL } from '../lib/constants';
 export default function Home() {
   const [latestNews, setLatestNews] = useState([]);
   const [showBanner, setShowBanner] = useState(true);
+  const [isLoadingNews, setIsLoadingNews] = useState(true);
+  const [newsError, setNewsError] = useState(null);
 
   useEffect(() => {
     document.title = `${SCHOOL.name} - Where Knowledge Meets Excellence`;
@@ -46,12 +48,22 @@ export default function Home() {
     }
 
     async function fetchNews() {
-      const { data } = await supabase
-        .from('news_posts')
-        .select('*')
-        .order('published_date', { ascending: false })
-        .limit(3);
-      if (data) setLatestNews(data);
+      try {
+        setIsLoadingNews(true);
+        setNewsError(null);
+        const { data, error } = await supabase
+          .from('news_posts')
+          .select('*')
+          .order('published_date', { ascending: false })
+          .limit(3);
+        if (error) throw error;
+        if (data) setLatestNews(data);
+      } catch (error) {
+        console.error('Error fetching news:', error);
+        setNewsError('Unable to load latest news. Please try again later.');
+      } finally {
+        setIsLoadingNews(false);
+      }
     }
     fetchNews();
 
@@ -64,6 +76,7 @@ export default function Home() {
   return (
     <div className="w-full">
       {/* Announcement Banner */}
+      <main id="main-content">
       {showBanner && (
         <FadeIn>
           <div className="relative bg-gradient-to-r from-primary via-primary-dark to-navy overflow-hidden">
@@ -100,6 +113,13 @@ export default function Home() {
                       alt="Activities This Week"
                       className="w-full h-auto object-contain"
                       loading="lazy"
+                      width="400"
+                      height="300"
+                      decoding="async"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.parentElement.classList.add('bg-white/5');
+                      }}
                     />
                   </div>
                   <h3 className="text-white font-heading font-bold text-lg mb-1">Activities This Week</h3>
@@ -113,6 +133,13 @@ export default function Home() {
                       alt="School Resumption Flyer"
                       className="w-full h-auto object-contain"
                       loading="lazy"
+                      width="400"
+                      height="300"
+                      decoding="async"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.parentElement.classList.add('bg-white/5');
+                      }}
                     />
                   </div>
                   <h3 className="text-white font-heading font-bold text-lg mb-1">School Resumption</h3>
@@ -127,6 +154,13 @@ export default function Home() {
                       alt="First Term Activities Flyer"
                       className="w-full h-auto object-contain"
                       loading="lazy"
+                      width="400"
+                      height="300"
+                      decoding="async"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.parentElement.classList.add('bg-white/5');
+                      }}
                     />
                   </div>
                   <h3 className="text-white font-heading font-bold text-lg mb-1">First Term Activities</h3>
@@ -157,6 +191,9 @@ export default function Home() {
                 src="https://media.base44.com/images/public/6a3d0beeb6c22560489f6db1/293ad5186_5902013719250669943.jpg" 
                 alt="School Logo" 
                 className="w-full h-full object-contain rounded-full bg-white"
+                width="112"
+                height="112"
+                decoding="async"
               />
             </div>
           </FadeIn>
@@ -331,20 +368,42 @@ export default function Home() {
       </section>
 
       {/* Section 6 — Latest News */}
-      {latestNews.length > 0 && (
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-end mb-12">
-              <FadeIn>
-                <h2 className="text-3xl sm:text-4xl font-heading font-bold text-navy">Latest News</h2>
-              </FadeIn>
-              <FadeIn delay={200}>
-                <Link to="/news" className="text-primary font-semibold hover:text-primary-dark hidden sm:flex items-center gap-1">
-                  View all news <ChevronRight className="w-4 h-4" />
-                </Link>
-              </FadeIn>
-            </div>
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-end mb-12">
+            <FadeIn>
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-navy">Latest News</h2>
+            </FadeIn>
+            <FadeIn delay={200}>
+              <Link to="/news" className="text-primary font-semibold hover:text-primary-dark hidden sm:flex items-center gap-1">
+                View all news <ChevronRight className="w-4 h-4" />
+              </Link>
+            </FadeIn>
+          </div>
 
+          {isLoadingNews ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8" role="status" aria-live="polite">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-md h-full flex flex-col border border-gray-100">
+                  <div className="h-48 bg-gray-200 animate-pulse" />
+                  <div className="p-6 flex-1 flex flex-col">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse mb-3 w-1/3" />
+                    <div className="h-6 bg-gray-200 rounded animate-pulse mb-3 w-3/4" />
+                    <div className="h-4 bg-gray-200 rounded animate-pulse mb-2" />
+                    <div className="h-4 bg-gray-200 rounded animate-pulse mb-2" />
+                    <div className="h-4 bg-gray-200 rounded animate-pulse mb-6 w-2/3" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : newsError ? (
+            <div className="text-center py-12" role="alert">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+                <p className="text-red-800 font-medium mb-2">Unable to load news</p>
+                <p className="text-red-600 text-sm">{newsError}</p>
+              </div>
+            </div>
+          ) : latestNews.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {latestNews.map((post, i) => (
                 <FadeIn key={post.id} delay={i * 150}>
@@ -356,7 +415,13 @@ export default function Home() {
                           alt={post.title} 
                           className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                           loading="lazy"
+                          width="400"
+                          height="300"
                           decoding="async"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.parentElement.classList.add('bg-gray-100');
+                          }}
                         />
                         <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary shadow-sm">
                           {post.category}
@@ -381,15 +446,21 @@ export default function Home() {
                 </FadeIn>
               ))}
             </div>
-            
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-muted">No news articles available at the moment.</p>
+            </div>
+          )}
+          
+          {!isLoadingNews && !newsError && latestNews.length > 0 && (
             <div className="mt-8 text-center sm:hidden">
               <Link to="/news" className="text-primary font-semibold hover:text-primary-dark inline-flex items-center gap-1">
                 View all news <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-          </div>
-        </section>
-      )}
+          )}
+        </div>
+      </section>
 
       {/* Section 7 — Testimonials */}
       <TestimonialsSection />
@@ -426,6 +497,7 @@ export default function Home() {
         <ExternalLink className="w-4 h-4" />
         School Portal
       </a>
+      </main>
     </div>
   );
 }
