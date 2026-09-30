@@ -250,7 +250,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 relative z-20">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             {[
-              { num: '500+', label: 'Students Enrolled' },
+              { num: '2,000+', label: 'Students Enrolled' },
               { num: '30+', label: 'Qualified Teachers' },
               { num: '20', label: 'Years of Excellence' },
               { num: '3', label: 'Levels of Education' }
